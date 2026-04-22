@@ -29,7 +29,7 @@ export async function BreakingNewsBanner() {
 		headline = breakingNews.headline;
 		slug = breakingNews.slug;
 	} catch {
-		// Keep fallback text if API is unavailable.
+		console.error("Failed to load breaking news:", error);
 	}
 
 	return (
