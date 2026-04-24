@@ -61,7 +61,7 @@ export async function unsubscribeAction(formData: FormData) {
 	if (token) {
 		try {
 			await deactivateSubscription(token);
-		} catch {
+		} catch (error) {
 			console.error("Failed to deactivate remote subscription:", error);
 		}
 	}

@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { subscribeAction, unsubscribeAction } from "@/app/actions/subscription";
+import { LoadingLink } from "@/components/navigation-feedback";
+import { HeaderSubscriptionSubmitButton } from "@/components/subscription-submit-buttons";
 import { getSubscriptionState } from "@/lib/subscription";
 
 function BellIcon({ subscribed }: { subscribed: boolean }) {
@@ -43,18 +44,21 @@ export async function Header() {
 		<header className="border-b border-[var(--border)] bg-white text-black">
 			<div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
 				<div className="flex items-center gap-9">
-					<Link href="/" className="flex items-center gap-2 text-lg font-semibold">
+					<LoadingLink
+						href="/"
+						className="flex items-center gap-2 text-lg font-semibold"
+					>
 						<LogoMark />
 						<span className="text-lg">Vercel Daily</span>
-					</Link>
+					</LoadingLink>
 
 					<nav className="flex items-center gap-7 text-sm text-neutral-500">
-						<Link className="transition hover:text-black" href="/">
+						<LoadingLink className="transition hover:text-black" href="/">
 							Home
-						</Link>
-						<Link className="transition hover:text-black" href="/search">
+						</LoadingLink>
+						<LoadingLink className="transition hover:text-black" href="/search">
 							Search
-						</Link>
+						</LoadingLink>
 					</nav>
 				</div>
 
@@ -62,26 +66,16 @@ export async function Header() {
 					{isSubscribed ? (
 						<form action={unsubscribeAction}>
 							<input type="hidden" name="redirectTo" value="/" />
-							<button
-								type="submit"
-								title="Unsubscribe"
-								aria-label="Unsubscribe"
-								className="rounded-md p-1 transition hover:bg-neutral-100"
-							>
+							<HeaderSubscriptionSubmitButton isSubscribed>
 								<BellIcon subscribed />
-							</button>
+							</HeaderSubscriptionSubmitButton>
 						</form>
 					) : (
 						<form action={subscribeAction}>
 							<input type="hidden" name="redirectTo" value="/" />
-							<button
-								type="submit"
-								title="Subscribe"
-								aria-label="Subscribe"
-								className="rounded-md p-1 transition hover:bg-neutral-100"
-							>
+							<HeaderSubscriptionSubmitButton isSubscribed={false}>
 								<BellIcon subscribed={false} />
-							</button>
+							</HeaderSubscriptionSubmitButton>
 						</form>
 					)}
 

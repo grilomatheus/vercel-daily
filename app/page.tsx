@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
-import { subscribeAction } from "@/app/actions/subscription";
+import { subscribeAction, unsubscribeAction } from "@/app/actions/subscription";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleGridSkeleton } from "@/components/article-grid-skeleton";
 import { BreakingNewsBanner } from "@/components/breaking-news-banner";
+import { LoadingLink } from "@/components/navigation-feedback";
+import { HeroSubscriptionSubmitButton } from "@/components/subscription-submit-buttons";
 import { getArticles } from "@/lib/api";
+import { getSubscriptionState } from "@/lib/subscription";
 
 export const metadata: Metadata = {
 	title: "Home",
@@ -45,6 +47,9 @@ async function FeaturedArticles() {
 }
 
 export default async function HomePage() {
+	const subscription = await getSubscriptionState();
+	const isSubscribed = subscription.isSubscribed;
+
 	return (
 		<>
 			<Suspense
@@ -73,22 +78,17 @@ export default async function HomePage() {
 					</p>
 
 					<div className="mt-8 flex flex-wrap gap-4">
-						<Link
+						<LoadingLink
 							href="/search"
 							className="inline-flex items-center gap-2 rounded-md bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
 						>
 							Browse articles
 							<span aria-hidden>→</span>
-						</Link>
+						</LoadingLink>
 
-						<form action={subscribeAction}>
+						<form action={isSubscribed ? unsubscribeAction : subscribeAction}>
 							<input type="hidden" name="redirectTo" value="/" />
-							<button
-								type="submit"
-								className="rounded-md border border-neutral-300 bg-white px-5 py-3 text-sm font-medium transition hover:bg-neutral-50"
-							>
-								Subscribe
-							</button>
+							<HeroSubscriptionSubmitButton isSubscribed={isSubscribed} />
 						</form>
 					</div>
 				</section>
@@ -104,12 +104,12 @@ export default async function HomePage() {
 							</p>
 						</div>
 
-						<Link
+						<LoadingLink
 							href="/search"
 							className="text-sm text-neutral-500 transition hover:text-black"
 						>
 							View all
-						</Link>
+						</LoadingLink>
 					</div>
 
 					<Suspense fallback={<ArticleGridSkeleton count={6} />}>

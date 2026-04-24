@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleGridSkeleton } from "@/components/article-grid-skeleton";
+import { SearchForm } from "@/components/search-form";
 import { getArticles, getCategories } from "@/lib/api";
 
 type SearchPageProps = {
@@ -72,7 +72,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 	const q = sanitizeParam(params.q);
 	const category = sanitizeParam(params.category);
 	const categories = await getCategories();
-	const suspenseKey = `${q ?? ""}-${category ?? ""}`;
+	const searchStateKey = `${q ?? ""}-${category ?? ""}`;
 
 	return (
 		<div className="mx-auto max-w-6xl px-6 py-16">
@@ -84,58 +84,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 				</p>
 			</header>
 
-			<form
-				action="/search"
-				method="get"
-				className="mt-8 grid gap-4 rounded-xl border border-neutral-200 bg-white p-4 md:grid-cols-[1fr_220px_auto_auto]"
+			<SearchForm
+				key={`search-form:${searchStateKey}`}
+				categories={categories}
+				q={q}
+				category={category}
+			/>
+
+			<Suspense
+				key={`search-results:${searchStateKey}`}
+				fallback={<ArticleGridSkeleton count={3} />}
 			>
-				<label className="flex flex-col gap-2">
-					<span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
-						Query
-					</span>
-					<input
-						type="search"
-						name="q"
-						defaultValue={q}
-						placeholder="Search by headline, content, or tag"
-						className="h-11 rounded-md border border-neutral-300 px-3 text-sm outline-none ring-black/20 transition focus:ring-2"
-					/>
-				</label>
-
-				<label className="flex flex-col gap-2">
-					<span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
-						Category
-					</span>
-					<select
-						name="category"
-						defaultValue={category ?? ""}
-						className="h-11 rounded-md border border-neutral-300 px-3 text-sm outline-none ring-black/20 transition focus:ring-2"
-					>
-						<option value="">All categories</option>
-						{categories.map((option) => (
-							<option key={option.slug} value={option.slug}>
-								{option.name}
-							</option>
-						))}
-					</select>
-				</label>
-
-				<button
-					type="submit"
-					className="h-11 self-end rounded-md bg-black px-5 text-sm font-medium text-white transition hover:opacity-90"
-				>
-					Search
-				</button>
-
-				<Link
-					href="/search"
-					className="h-11 self-end rounded-md border border-neutral-300 px-5 text-center text-sm font-medium leading-[42px] transition hover:bg-neutral-100"
-				>
-					Clear
-				</Link>
-			</form>
-
-			<Suspense key={suspenseKey} fallback={<ArticleGridSkeleton count={3} />}>
 				<SearchResults q={q} category={category} />
 			</Suspense>
 		</div>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LoadingLink } from "@/components/navigation-feedback";
 import type { Article } from "@/lib/api";
 
 type ArticleCardProps = {
@@ -16,7 +16,7 @@ function formatDate(date: string) {
 export function ArticleCard({ article }: ArticleCardProps) {
 	return (
 		<article className="group">
-			<Link href={`/articles/${article.slug}`} className="block">
+			<LoadingLink href={`/articles/${article.slug}`} className="block">
 				<div className="aspect-[16/10] overflow-hidden rounded-xl border border-neutral-300 bg-neutral-100">
 					{article.image ? (
 						// eslint-disable-next-line @next/next/no-img-element
@@ -45,7 +45,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 						</p>
 					) : null}
 				</div>
-			</Link>
+			</LoadingLink>
 		</article>
 	);
 }

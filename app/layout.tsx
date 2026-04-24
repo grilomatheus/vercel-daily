@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { NavigationFeedbackProvider } from "@/components/navigation-feedback";
 
 export const metadata: Metadata = {
   applicationName: "Vercel Daily",
@@ -47,13 +48,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-[#f3f3f3] text-[#0b0b0f] antialiased">
-        <div className="flex min-h-screen flex-col">
-          <Suspense fallback={<HeaderFallback />}>
-            <Header />
-          </Suspense>
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <NavigationFeedbackProvider>
+          <div className="flex min-h-screen flex-col">
+            <Suspense fallback={<HeaderFallback />}>
+              <Header />
+            </Suspense>
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </NavigationFeedbackProvider>
       </body>
     </html>
   );

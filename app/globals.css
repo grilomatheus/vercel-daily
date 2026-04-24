@@ -21,3 +21,13 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-sans);
 }
+
+@keyframes route-progress {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(300%);
+	}
+}
